@@ -51,30 +51,78 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Create GitHub Issue title
-    const companyInfo = body.company ? ` (${body.company})` : ''
-    const issueTitle = `🎯 Lead: ${body.name}${companyInfo}`
+    // Extract lead metadata
+    const userAgent = request.headers.get('user-agent') || 'Unknown'
+    const referer = request.headers.get('referer') || 'Direct'
+    const timestamp = new Date()
+    const dateStr = timestamp.toLocaleDateString('en-US', { 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    })
+    const timeStr = timestamp.toLocaleTimeString('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      timeZoneName: 'short'
+    })
 
-    // Create GitHub Issue body (formatted as markdown table)
-    const issueBody = `## Lead Information
+    // Determine lead source
+    let leadSource = 'Landing Page - Direct'
+    if (referer && referer !== 'Direct') {
+      const refUrl = new URL(referer)
+      leadSource = `Landing Page - Referrer: ${refUrl.hostname}`
+    }
+
+    // Create Issue title (CRM-style)
+    const companyInfo = body.company ? ` | ${body.company}` : ''
+    const issueTitle = `💼 New Lead: ${body.name}${companyInfo}`
+
+    // Create Issue body (CRM-oriented format)
+    const issueBody = `## 📊 Lead Information
 
 | Field | Value |
 |-------|-------|
-| **Name** | ${body.name} |
-| **Email** | ${body.email} |
-| **Company** | ${body.company || 'Not provided'} |
-| **Submitted** | ${new Date().toISOString()} |
+| **Full Name** | ${body.name} |
+| **Email** | [\`${body.email}\`](mailto:${body.email}) |
+| **Company** | ${body.company || '_Not provided_'} |
+| **Lead Source** | ${leadSource} |
+| **Captured Date** | ${dateStr} |
+| **Captured Time** | ${timeStr} |
+| **Lead Score** | 🔵 To be qualified |
 
-## Message
+## 💬 Lead Message
 
-${body.message}
+> ${body.message.split('\n').join('\n> ')}
+
+## 🎯 Next Actions
+
+- [ ] Initial contact within 24h
+- [ ] Qualify lead (budget, timeline, decision maker)
+- [ ] Schedule discovery call
+- [ ] Send proposal/pricing
+
+## 📝 Internal Notes
+
+_Add your notes here as you progress through the sales pipeline..._
+
+## 🔍 Technical Details
+
+<details>
+<summary>Click to expand</summary>
+
+- **User Agent**: ${userAgent}
+- **Referrer**: ${referer}
+- **Timestamp (ISO)**: ${timestamp.toISOString()}
+
+</details>
 
 ---
 
-*This issue was automatically created by the Lead Capture System*
+*🤖 Automatically captured by Lead Capture System*
 `
 
     // Create GitHub Issue via GitHub API
+    // Labels represent lead pipeline states
     const githubResponse = await fetch(
       `https://api.github.com/repos/${owner}/${repo}/issues`,
       {
@@ -88,7 +136,7 @@ ${body.message}
         body: JSON.stringify({
           title: issueTitle,
           body: issueBody,
-          labels: ['lead', 'contact-form'],
+          labels: ['new-lead', 'uncontacted', 'landing-page'],
         }),
       }
     )
@@ -97,7 +145,7 @@ ${body.message}
       const errorData = await githubResponse.json()
       console.error('GitHub API error:', errorData)
       return NextResponse.json(
-        { error: 'Failed to create GitHub Issue. Please try again later.' },
+        { error: 'Failed to save lead. Please try again later.' },
         { status: 500 }
       )
     }
@@ -107,13 +155,14 @@ ${body.message}
     return NextResponse.json(
       {
         success: true,
-        message: 'Your message has been received. We\'ll get back to you soon!',
-        issueUrl: issueData.html_url,
+        message: 'Thank you! Your information has been received. We\'ll contact you within 24 hours.',
+        leadId: issueData.number,
+        leadUrl: issueData.html_url,
       },
       { status: 201 }
     )
   } catch (error) {
-    console.error('Error processing contact form:', error)
+    console.error('Error processing lead capture:', error)
     return NextResponse.json(
       { error: 'An unexpected error occurred. Please try again later.' },
       { status: 500 }
