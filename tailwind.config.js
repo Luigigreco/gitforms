@@ -1,3 +1,5 @@
+const theme = require('./config/theme.json')
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
@@ -6,7 +8,20 @@ module.exports = {
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        primary: theme.colors.primary,
+        success: theme.colors.success,
+        error: theme.colors.error,
+        background: theme.colors.background,
+        text: theme.colors.text,
+        border: theme.colors.border,
+      },
+      borderRadius: theme.borderRadius,
+      boxShadow: {
+        card: theme.shadows.card,
+      },
+    },
   },
   plugins: [],
 }

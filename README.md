@@ -8,6 +8,8 @@ Ogni volta che qualcuno compila il form, ricevi un'email di notifica. Zero costi
 
 - ✅ Form semplice e pulito
 - ✅ Email automatiche quando ricevi un contatto
+- ✅ **Completamente configurabile** (colori, testi, lingua)
+- ✅ Multilingua (IT/EN) con auto-rilevamento
 - ✅ Next.js 13+ con App Router
 - ✅ TypeScript per sicurezza
 - ✅ Tailwind CSS per lo stile
@@ -57,6 +59,9 @@ Modifica `.env.local`:
 ```env
 GITHUB_TOKEN=ghp_il_tuo_token_qui
 GITHUB_REPO=tuo-username/lead-capture-system
+
+# Opzionale: forza una lingua specifica
+# NEXT_PUBLIC_DEFAULT_LOCALE=it
 ```
 
 ### 5. Avvia il server
@@ -67,12 +72,63 @@ npm run dev
 
 Apri http://localhost:3000 per vedere il form.
 
+## 🎨 Personalizzazione (ZERO Codice!)
+
+### Cambiare i Colori
+
+Modifica `config/theme.json`:
+
+```json
+{
+  "colors": {
+    "primary": {
+      "DEFAULT": "#2563eb",   // Colore principale bottone
+      "hover": "#1d4ed8",     // Colore hover bottone
+      "ring": "#3b82f6"       // Colore focus input
+    }
+  }
+}
+```
+
+**Esempi:**
+- **Verde:** `"DEFAULT": "#10b981"`, `"hover": "#059669"`
+- **Viola:** `"DEFAULT": "#8b5cf6"`, `"hover": "#7c3aed"`
+- **Rosso:** `"DEFAULT": "#ef4444"`, `"hover": "#dc2626"`
+
+### Cambiare i Testi dei Campi
+
+Modifica `config/fields.json`:
+
+```json
+{
+  "it": {
+    "firstName": "Nome",
+    "lastName": "Cognome",
+    "email": "Email",
+    "company": "Società",     // Cambia "Azienda" in "Società"
+    "message": "Il tuo messaggio"
+  }
+}
+```
+
+### Cambiare la Lingua
+
+Il form rileva automaticamente la lingua del browser (IT/EN).
+
+Per forzare una lingua, aggiungi in `.env.local`:
+
+```env
+NEXT_PUBLIC_DEFAULT_LOCALE=it   # Forza italiano
+# oppure
+NEXT_PUBLIC_DEFAULT_LOCALE=en   # Forza inglese
+```
+
 ## Campi del Form
 
 - **Nome** (obbligatorio)
 - **Cognome** (obbligatorio)  
 - **Email** (obbligatorio)
-- **Azienda** (opzionale)
+- **Azienda** (obbligatorio)
 - **Messaggio** (obbligatorio)
 
 ## Test con curl
@@ -109,7 +165,7 @@ GitHub manda automaticamente email quando ricevi un nuovo contatto. Per riceverl
 Ogni email contiene:
 - Nome e cognome
 - Email del contatto
-- Azienda (se fornita)
+- Azienda
 - Messaggio completo
 - Data e ora
 
@@ -122,14 +178,8 @@ Ogni email contiene:
 3. Aggiungi le variabili d'ambiente:
    - `GITHUB_TOKEN`
    - `GITHUB_REPO`
+   - `NEXT_PUBLIC_DEFAULT_LOCALE` (opzionale)
 4. Deploy automatico!
-
-### Variabili d'Ambiente (Produzione)
-
-Nel tuo hosting (Vercel, Netlify, ecc.) imposta:
-
-- `GITHUB_TOKEN`: Il token GitHub che hai creato
-- `GITHUB_REPO`: Formato `username/nome-repo`
 
 ## Analisi Costi
 
@@ -140,31 +190,15 @@ Nel tuo hosting (Vercel, Netlify, ecc.) imposta:
 | Vercel hosting | **€0** (piano hobby) |
 | **Totale** | **€0/mese** |
 
-## Personalizzazione
+## File di Configurazione
 
-### Cambiare i campi del form
+| File | Scopo |
+|------|-------|
+| `config/theme.json` | Colori, bordi, ombre |
+| `config/fields.json` | Etichette campi form |
+| `.env.local` | Token GitHub, lingua default |
 
-Modifica `src/app/page.tsx` per aggiungere/rimuovere campi.
-
-### Cambiare lo stile
-
-Il form usa Tailwind CSS. Puoi modificare i colori in `src/app/page.tsx`:
-
-```tsx
-// Cambia il colore del bottone
-className="bg-blue-600 hover:bg-blue-700"  // blu attuale
-className="bg-green-600 hover:bg-green-700"  // verde
-className="bg-purple-600 hover:bg-purple-700"  // viola
-```
-
-### Cambiare la lingua
-
-Il form è in italiano. Per l'inglese, modifica i testi in `src/app/page.tsx`:
-
-```tsx
-<h1>Contact Us</h1>
-<p>Fill out the form and we'll get back to you soon.</p>
-```
+**Modifica questi file senza toccare il codice!**
 
 ## Sicurezza
 

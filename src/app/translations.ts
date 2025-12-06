@@ -1,14 +1,16 @@
+import fieldLabels from '../../config/fields.json'
+
 export type Locale = 'it' | 'en'
 
 export const translations = {
   it: {
     title: 'Contattaci',
     subtitle: 'Compila il form e ti ricontatteremo a breve.',
-    firstName: 'Nome',
-    lastName: 'Cognome',
-    email: 'Email',
-    company: 'Azienda',
-    message: 'Messaggio',
+    firstName: fieldLabels.it.firstName,
+    lastName: fieldLabels.it.lastName,
+    email: fieldLabels.it.email,
+    company: fieldLabels.it.company,
+    message: fieldLabels.it.message,
     required: '*',
     submit: 'Invia Messaggio',
     submitting: 'Invio in corso...',
@@ -27,11 +29,11 @@ export const translations = {
   en: {
     title: 'Contact Us',
     subtitle: 'Fill out the form and we\'ll get back to you soon.',
-    firstName: 'First Name',
-    lastName: 'Last Name',
-    email: 'Email',
-    company: 'Company',
-    message: 'Message',
+    firstName: fieldLabels.en.firstName,
+    lastName: fieldLabels.en.lastName,
+    email: fieldLabels.en.email,
+    company: fieldLabels.en.company,
+    message: fieldLabels.en.message,
     required: '*',
     submit: 'Send Message',
     submitting: 'Sending...',

@@ -1,0 +1,16 @@
+{
+  "it": {
+    "firstName": "Nome",
+    "lastName": "Cognome",
+    "email": "Email",
+    "company": "Azienda",
+    "message": "Messaggio"
+  },
+  "en": {
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "email": "Email",
+    "company": "Company",
+    "message": "Message"
+  }
+}
