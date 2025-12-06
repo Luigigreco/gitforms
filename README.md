@@ -29,7 +29,7 @@ User fills form → Data saved to GitHub Issue → Email notification sent
 
 ```bash
 # 1. Clone
-git clone https://github.com/omega-suite-finance/gitforms.git
+git clone https://github.com/Luigigreco/gitforms.git
 cd gitforms
 
 # 2. Install
@@ -386,8 +386,8 @@ MIT
 
 ## Repository
 
-https://github.com/omega-suite-finance/gitforms
+https://github.com/Luigigreco/gitforms
 
 ---
 
-**Made with ❤️ by the GitForms team** | [Star us on GitHub](https://github.com/omega-suite-finance/gitforms) ⭐
+**Made with ❤️ by Luigi Greco** | [Star us on GitHub](https://github.com/Luigigreco/gitforms) ⭐
