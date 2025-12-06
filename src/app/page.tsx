@@ -120,13 +120,14 @@ export default function Home() {
 
           <div>
             <label htmlFor="company" className="block text-sm font-medium text-gray-700 mb-1">
-              Azienda
+              Azienda *
             </label>
             <input
               type="text"
               id="company"
               name="company"
-              placeholder="La tua azienda (opzionale)"
+              required
+              placeholder="La tua azienda"
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
             />
           </div>
