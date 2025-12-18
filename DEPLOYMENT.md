@@ -1,458 +1,346 @@
 # Deployment Guide
 
-Guida completa al deployment del **Landing Page Contact Form** su diverse piattaforme.
-
-## Indice
-
-1. [Vercel (Recommended)](#1-vercel-recommended-)
-2. [Netlify](#2-netlify)
-3. [Railway](#3-railway)
-4. [Render.com](#4-rendercom)
-5. [Docker / Self-Hosted](#5-docker--self-hosted-)
-6. [AWS Amplify](#6-aws-amplify)
-7. [Troubleshooting](#troubleshooting)
+Complete guide for deploying the **Landing Page Contact Form** on various platforms.
 
 ---
 
 ## 1. Vercel (Recommended) ⚡
 
-**Setup Time:** 2 minuti  
-**Difficoltà:** ⭐ Facile  
-**Free Tier:** Illimitato (progetti personali)
+**Setup Time:** 2 minutes  
+**Difficulty:** ⭐ Easy  
+**Free Tier:** Unlimited (personal projects)
 
-### Metodo A: CLI (Veloce)
-
+### Via CLI
 ```bash
-# 1. Installa Vercel CLI
 npm i -g vercel
-
-# 2. Login
 vercel login
-
-# 3. Deploy
 vercel
-
-# 4. Aggiungi environment variables
-vercel env add GITHUB_TOKEN
-vercel env add GITHUB_REPO
-
-# 5. Redeploy con le variabili
-vercel --prod
 ```
 
-### Metodo B: Dashboard (Punto e clicca)
-
-1. Vai su [vercel.com/new](https://vercel.com/new)
-2. Click **"Import Git Repository"**
-3. Autorizza GitHub e seleziona il repository
-4. **Configure Project:**
-   - Framework Preset: **Next.js** (auto-detected)
-   - Build Command: `npm run build`
-   - Output Directory: `.next`
-5. **Environment Variables:** Click "Add"
-   - `GITHUB_TOKEN` → il tuo token
-   - `GITHUB_REPO` → `owner/repo-name`
-   - `NEXT_PUBLIC_DEFAULT_LOCALE` → `it` o `en` (opzionale)
-6. Click **Deploy**
-
-### Auto-Deploy
-
-Ogni push su `main` → Deploy automatico ✅
-
-### Custom Domain
-
-1. Dashboard → Settings → Domains
-2. Aggiungi il tuo dominio
-3. Configura DNS (Vercel fornisce istruzioni)
-
----
-
-## 2. Netlify
-
-**Setup Time:** 3 minuti  
-**Difficoltà:** ⭐ Facile  
-**Free Tier:** 100GB bandwidth/mese
-
-### Deployment
-
-1. Vai su [app.netlify.com/start](https://app.netlify.com/start)
-2. Click **"Import from Git"**
-3. Autorizza GitHub e seleziona repository
-4. **Build Settings:**
-   - Base directory: *lascia vuoto*
-   - Build command: `npm run build`
-   - Publish directory: `.next`
-5. **Environment Variables:** Click "Show advanced"
-   - `GITHUB_TOKEN`
-   - `GITHUB_REPO`
-   - `NEXT_PUBLIC_DEFAULT_LOCALE` (opzionale)
-6. Click **Deploy site**
-
-### Post-Deploy Configuration
-
-Netlify richiede configurazione aggiuntiva per Next.js:
-
-1. Installa il plugin Next.js Runtime:
-   ```bash
-   npm install --save @netlify/plugin-nextjs
-   ```
-
-2. Crea `netlify.toml`:
-   ```toml
-   [build]
-     command = "npm run build"
-     publish = ".next"
-
-   [[plugins]]
-     package = "@netlify/plugin-nextjs"
-   ```
-
-3. Commit e push → redeploy automatico
-
----
-
-## 3. Railway
-
-**Setup Time:** 3 minuti  
-**Difficoltà:** ⭐⭐ Medio  
-**Free Tier:** $5 credit/mese (~500h)
-
-### Deployment
-
-1. Vai su [railway.app](https://railway.app)
-2. Click **"New Project"**
-3. Select **"Deploy from GitHub repo"**
-4. Autorizza GitHub e seleziona repository
-5. Railway **auto-rileva** Next.js e configura:
-   - Build Command: `npm install && npm run build`
-   - Start Command: `npm start`
-6. Click **"Deploy"**
+### Via Dashboard
+1. Go to [vercel.com/new](https://vercel.com/new)
+2. Import GitHub repository
+3. Configure environment variables
+4. Deploy
 
 ### Environment Variables
+```env
+GITHUB_TOKEN=your_github_token
+GITHUB_REPO_OWNER=your_username
+GITHUB_REPO_NAME=your_repo
+```
 
-1. Dashboard → Variables tab
-2. Aggiungi:
-   ```
-   GITHUB_TOKEN=ghp_xxxx...
-   GITHUB_REPO=owner/repo-name
-   NEXT_PUBLIC_DEFAULT_LOCALE=it
-   ```
-3. Click **"Redeploy"**
-
-### Custom Domain
-
-1. Settings → Domains
-2. Aggiungi custom domain
-3. Configura CNAME nel tuo DNS provider
+**Advantages:**
+- Auto-deploy on every push to `main`
+- Built-in CDN (99.99% uptime)
+- Automatic HTTPS certificate
+- Edge Functions optimization
 
 ---
 
-## 4. Render.com
+## 2. Netlify 🎯
 
-**Setup Time:** 5 minuti  
-**Difficoltà:** ⭐⭐ Medio  
-**Free Tier:** Illimitato (con auto-sleep dopo 15min inattività)
+**Setup Time:** 3 minutes  
+**Difficulty:** ⭐ Easy  
+**Free Tier:** 100GB bandwidth/month
 
-### Deployment
+### Via CLI
+```bash
+npm install -g netlify-cli
+netlify login
+netlify init
+netlify deploy --prod
+```
 
-1. Vai su [render.com](https://render.com)
-2. Click **"New +"** → **"Web Service"**
-3. Connect repository
-4. **Configure:**
-   - Name: `lead-capture-system`
-   - Environment: **Node**
-   - Build Command: `npm install && npm run build`
-   - Start Command: `npm start`
-   - Instance Type: **Free**
-5. **Environment Variables:**
-   - `GITHUB_TOKEN`
-   - `GITHUB_REPO`
-   - `NEXT_PUBLIC_DEFAULT_LOCALE` (opzionale)
-   - `NODE_ENV` = `production`
-6. Click **"Create Web Service"**
+### Via Dashboard
+1. Go to [app.netlify.com](https://app.netlify.com)
+2. **New site from Git**
+3. Connect GitHub repository
+4. **Build command:** `npm run build`
+5. **Publish directory:** `.next`
+6. Add environment variables
 
-### ⚠️ Limitazioni Free Tier
+### Custom `netlify.toml` (Optional)
+```toml
+[build]
+  command = "npm run build"
+  publish = ".next"
 
-- **Auto-sleep:** Il servizio entra in sleep dopo 15 minuti di inattività
-- **Cold start:** Primo accesso dopo sleep = 30-60 secondi
-- **Soluzione:** Upgrade a piano Starter ($7/mese) per rimuovere sleep
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+```
+
+**Advantages:**
+- Instant rollback
+- Built-in forms (alternative to GitHub Issues)
+- Split testing
+- Serverless functions
 
 ---
 
-## 5. Docker / Self-Hosted 🐳
+## 3. Railway 🚂
 
-**Setup Time:** 10-15 minuti  
-**Difficoltà:** ⭐⭐⭐ Avanzato  
-**Costo:** VPS €5-20/mese
+**Setup Time:** 5 minutes  
+**Difficulty:** ⭐⭐ Medium  
+**Free Tier:** $5 credit/month (500 hours)
 
-### Prerequisiti
-
-- Docker installato sul server
-- Accesso SSH al server
-- Dominio configurato (opzionale)
-
-### Metodo A: Docker Run
-
+### Via CLI
 ```bash
-# 1. Clone repository sul server
-git clone https://github.com/omega-suite-finance/lead-capture-system.git
-cd lead-capture-system
-
-# 2. Build image
-docker build -t lead-capture-system .
-
-# 3. Run container
-docker run -d \
-  --name lead-capture \
-  -p 3000:3000 \
-  -e GITHUB_TOKEN=ghp_xxxx \
-  -e GITHUB_REPO=owner/repo-name \
-  -e NEXT_PUBLIC_DEFAULT_LOCALE=it \
-  --restart unless-stopped \
-  lead-capture-system
-
-# 4. Verifica
-docker logs lead-capture
+npm i -g @railway/cli
+railway login
+railway init
+railway up
 ```
 
-### Metodo B: Docker Compose (Recommended)
+### Via Dashboard
+1. Go to [railway.app](https://railway.app)
+2. **New Project** → **Deploy from GitHub**
+3. Select repository
+4. Railway auto-detects Next.js
+5. Add environment variables
 
-```bash
-# 1. Clone repository
-git clone https://github.com/omega-suite-finance/lead-capture-system.git
-cd lead-capture-system
-
-# 2. Crea .env file
-cat > .env << EOF
-GITHUB_TOKEN=ghp_xxxxxxxxxxxxxxxxxxxx
-GITHUB_REPO=owner/repo-name
-NEXT_PUBLIC_DEFAULT_LOCALE=it
-EOF
-
-# 3. Start services
-docker-compose up -d
-
-# 4. Verifica
-docker-compose logs -f
-```
-
-### NGINX Reverse Proxy (Produzione)
-
-```nginx
-# /etc/nginx/sites-available/lead-capture
-
-server {
-    listen 80;
-    server_name your-domain.com;
-
-    location / {
-        proxy_pass http://localhost:3000;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host $host;
-        proxy_cache_bypass $http_upgrade;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-    }
+### Custom Configuration
+Create `railway.json`:
+```json
+{
+  "$schema": "https://railway.app/railway.schema.json",
+  "build": {
+    "builder": "NIXPACKS"
+  },
+  "deploy": {
+    "startCommand": "npm start",
+    "restartPolicyType": "ON_FAILURE"
+  }
 }
 ```
 
-```bash
-# Abilita sito
-sudo ln -s /etc/nginx/sites-available/lead-capture /etc/nginx/sites-enabled/
-sudo nginx -t
-sudo systemctl reload nginx
+**Advantages:**
+- Database integration (Postgres, MySQL, Redis)
+- Private networking
+- Container-based (more control)
+- Usage monitoring
 
-# SSL con Let's Encrypt
-sudo certbot --nginx -d your-domain.com
+---
+
+## 4. Render 🔷
+
+**Setup Time:** 5 minutes  
+**Difficulty:** ⭐⭐ Medium  
+**Free Tier:** 750 hours/month (static sites unlimited)
+
+### Via Dashboard
+1. Go to [render.com](https://render.com)
+2. **New** → **Static Site** (or **Web Service** for SSR)
+3. Connect GitHub repository
+4. **Build Command:** `npm run build`
+5. **Publish Directory:** `out` (for static) or keep empty (for SSR)
+6. Add environment variables
+
+### For Static Export
+Modify `next.config.js`:
+```javascript
+module.exports = {
+  output: 'export',
+  images: {
+    unoptimized: true
+  }
+}
 ```
 
-### Auto-Updates con Watchtower
+Then:
+```bash
+npm run build
+# Generates /out folder
+```
 
+**Advantages:**
+- Free SSL certificates
+- Custom domains
+- Background jobs
+- Preview environments
+
+---
+
+## 5. Docker 🐳
+
+**Setup Time:** 10 minutes  
+**Difficulty:** ⭐⭐⭐ Advanced  
+**Cost:** Depends on hosting provider
+
+### Dockerfile
+```dockerfile
+FROM node:18-alpine AS base
+
+# Install dependencies
+FROM base AS deps
+RUN apk add --no-cache libc6-compat
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci
+
+# Build application
+FROM base AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+RUN npm run build
+
+# Production image
+FROM base AS runner
+WORKDIR /app
+ENV NODE_ENV production
+
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+
+COPY --from=builder /app/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+
+USER nextjs
+EXPOSE 3000
+ENV PORT 3000
+
+CMD ["node", "server.js"]
+```
+
+### docker-compose.yml
 ```yaml
-# docker-compose.yml
 version: '3.8'
 services:
   app:
-    # ... configurazione esistente ...
-
-  watchtower:
-    image: containrrr/watchtower
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    command: --interval 3600  # Check updates ogni ora
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+      - GITHUB_REPO_OWNER=${GITHUB_REPO_OWNER}
+      - GITHUB_REPO_NAME=${GITHUB_REPO_NAME}
+    restart: unless-stopped
 ```
 
----
-
-## 6. AWS Amplify
-
-**Setup Time:** 10 minuti  
-**Difficoltà:** ⭐⭐⭐ Avanzato  
-**Free Tier:** 1000 build minuti/mese
-
-### Deployment
-
-1. AWS Console → **AWS Amplify**
-2. Click **"New app"** → **"Host web app"**
-3. Select **GitHub** e autorizza
-4. Seleziona repository e branch (`main`)
-5. **Build settings** (auto-detected):
-   ```yaml
-   version: 1
-   frontend:
-     phases:
-       preBuild:
-         commands:
-           - npm ci
-       build:
-         commands:
-           - npm run build
-     artifacts:
-       baseDirectory: .next
-       files:
-         - '**/*'
-     cache:
-       paths:
-         - node_modules/**/*
-   ```
-6. **Environment Variables:**
-   - `GITHUB_TOKEN`
-   - `GITHUB_REPO`
-   - `NEXT_PUBLIC_DEFAULT_LOCALE`
-   - `_LIVE_UPDATES` = `[{"pkg":"next","type":"npm","version":"latest"}]`
-7. Click **"Save and deploy"**
-
-### Custom Domain
-
-1. Domain Management → Add domain
-2. Segui wizard AWS per configurare DNS
-
----
-
-## Troubleshooting
-
-### Build Errors
-
-**Error:** `Module not found: Can't resolve 'config/theme.json'`
-
-**Fix:**
+### Commands
 ```bash
-# Verifica che config/ sia nel repository
-ls -la config/
-git add config/
-git commit -m "fix: add config files"
-git push
-```
+# Build image
+docker build -t gitforms .
 
----
+# Run container
+docker run -p 3000:3000 --env-file .env gitforms
 
-### Environment Variables Non Caricate
-
-**Sintomo:** Form non funziona, errori 500
-
-**Fix:**
-1. Verifica variabili nella dashboard della piattaforma
-2. Variabili `NEXT_PUBLIC_*` richiedono **rebuild completo**
-3. Redeploy dopo ogni modifica a variabili `NEXT_PUBLIC_*`
-
----
-
-### Docker: Container Non Parte
-
-**Sintomo:** `docker ps` non mostra container
-
-**Debug:**
-```bash
-# Controlla logs
-docker logs lead-capture
-
-# Controlla se porta 3000 è occupata
-lsof -i :3000
-
-# Rebuild forzato
-docker-compose down
-docker-compose build --no-cache
+# With docker-compose
 docker-compose up -d
 ```
 
+**Advantages:**
+- Total portability
+- Consistent environments
+- Easy scaling
+- Deployable anywhere (AWS, GCP, Azure, DigitalOcean)
+
 ---
 
-### CORS Errors
+## 6. AWS Amplify ☁️
 
-**Sintomo:** Form funziona in local ma non in produzione
+**Setup Time:** 7 minutes  
+**Difficulty:** ⭐⭐⭐ Advanced  
+**Free Tier:** 1000 build minutes/month, 15GB storage
 
-**Fix:** Verifica che `GITHUB_REPO` sia corretto e che il token abbia i permessi giusti:
-```bash
-# Test token
-curl -H "Authorization: token ghp_xxxx" \
-  https://api.github.com/user
+### Via Console
+1. Go to [AWS Amplify Console](https://console.aws.amazon.com/amplify)
+2. **New app** → **Host web app**
+3. Connect GitHub repository
+4. **Build settings** (auto-detected for Next.js)
+5. Add environment variables
+6. Deploy
+
+### amplify.yml (Auto-generated)
+```yaml
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - npm ci
+    build:
+      commands:
+        - npm run build
+  artifacts:
+    baseDirectory: .next
+    files:
+      - '**/*'
+  cache:
+    paths:
+      - node_modules/**/*
 ```
 
----
-
-## Comparison Matrix
-
-| Piattaforma | Setup | Free Tier | Auto-Deploy | SSL | Logs | Best For |
-|-------------|-------|-----------|-------------|-----|------|----------|
-| **Vercel** | ⚡ 2min | ✅ Unlimited | ✅ | ✅ | ✅ | **Prototipo veloce** |
-| **Netlify** | ⚡ 3min | ✅ 100GB | ✅ | ✅ | ✅ | Alternative a Vercel |
-| **Railway** | ⭐ 3min | ⚠️ $5 credit | ✅ | ✅ | ✅ | Startup con database |
-| **Render** | ⭐ 5min | ⚠️ Auto-sleep | ✅ | ✅ | ✅ | Side projects |
-| **Docker** | ⭐⭐⭐ 10min | ❌ VPS €5 | ❌ | ⚙️ Manual | ⚙️ | **Full control** |
-| **AWS** | ⭐⭐⭐ 10min | ✅ 1000min | ✅ | ✅ | ✅ | **Enterprise** |
+**Advantages:**
+- AWS infrastructure integration
+- CDN via CloudFront
+- Custom domain with Route 53
+- Branch-based deployments
 
 ---
 
-## Recommended Workflows
+## 🔧 Troubleshooting
 
-### Freelancer / Side Project
-**→ Vercel Free Tier**
-- Zero costi
-- Setup 2 minuti
-- Auto-deploy
-- Custom domain incluso
+### Error: "Module not found"
+```bash
+rm -rf node_modules package-lock.json
+npm install
+npm run build
+```
 
-### Agenzia / Cliente
-**→ Vercel Pro ($20/mese)**
-- Team collaboration
-- Preview deployments
-- Password protection
-- Analytics
+### Error: "GITHUB_TOKEN not found"
+Check that environment variables are correctly configured:
+```bash
+echo $GITHUB_TOKEN  # Should not be empty
+```
 
-### Startup con Database
-**→ Railway**
-- App + Postgres + Redis
-- Single dashboard
-- Auto-scaling
+### Build failing on deployment platform
+1. Check Node.js version (18+ required)
+2. Verify all environment variables are set
+3. Check build logs for specific error
+4. Ensure `npm run build` works locally
 
-### Enterprise
-**→ AWS Amplify**
-- Compliance (GDPR, SOC2)
-- Global CDN
-- Advanced monitoring
-- SLA garantiti
-
-### Self-Hosted / On-Premise
-**→ Docker + VPS**
-- Full control
-- Custom infrastructure
-- Air-gapped environments
+### Form not sending Issues
+1. Verify GitHub token has `repo` scope
+2. Check `GITHUB_REPO_OWNER` and `GITHUB_REPO_NAME` are correct
+3. Ensure Issues are enabled in repository settings
+4. Check browser console for errors
 
 ---
 
-## Next Steps
+## 📊 Platform Comparison
 
-Dopo il deploy:
-
-1. ✅ Testa il form con curl (vedi TESTING.md)
-2. ✅ Configura custom domain
-3. ✅ Setup monitoring (Sentry, LogRocket)
-4. ✅ Abilita analytics (Plausible, Umami)
-5. ✅ Backup repository settings
+| Platform | Difficulty | Free Tier | Best For |
+|----------|-----------|-----------|----------|
+| **Vercel** | ⭐ | Unlimited | Quick deployment, Next.js projects |
+| **Netlify** | ⭐ | 100GB/month | Static sites, forms |
+| **Railway** | ⭐⭐ | $5 credit | Full-stack apps with databases |
+| **Render** | ⭐⭐ | 750h/month | Static + dynamic projects |
+| **Docker** | ⭐⭐⭐ | - | Total control, portability |
+| **AWS Amplify** | ⭐⭐⭐ | 1000 min/month | AWS ecosystem integration |
 
 ---
 
-**Hai problemi?** Apri un issue su [GitHub](https://github.com/omega-suite-finance/lead-capture-system/issues)
+## 🚀 Recommended Workflow
+
+1. **Development:** Local with `npm run dev`
+2. **Staging:** Vercel preview deployments (automatic)
+3. **Production:** Vercel main branch (automatic)
+4. **Monitoring:** Vercel Analytics (built-in)
+
+---
+
+## 📚 Additional Resources
+
+- [Next.js Deployment Documentation](https://nextjs.org/docs/deployment)
+- [Vercel Documentation](https://vercel.com/docs)
+- [Docker Best Practices for Next.js](https://nextjs.org/docs/deployment#docker-image)
+- [GitHub Issues API](https://docs.github.com/en/rest/issues)
+
+---
+
+**Need help?** Open an issue on [GitHub](https://github.com/Luigigreco/gitforms/issues)

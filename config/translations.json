@@ -1,31 +1,4 @@
 {
-  "it": {
-    "title": "Contattaci",
-    "subtitle": "Compila il form e ti ricontatteremo a breve.",
-    "fields": {
-      "firstName": "Nome",
-      "lastName": "Cognome",
-      "email": "Email",
-      "company": "Azienda",
-      "message": "Messaggio"
-    },
-    "placeholders": {
-      "firstName": "Mario",
-      "lastName": "Rossi",
-      "email": "mario.rossi@example.com",
-      "company": "La tua azienda",
-      "message": "Come possiamo aiutarti?"
-    },
-    "buttons": {
-      "submit": "Invia Messaggio",
-      "submitting": "Invio in corso..."
-    },
-    "messages": {
-      "success": "Grazie! Ti contatteremo a breve.",
-      "error": "Errore"
-    },
-    "required": "*"
-  },
   "en": {
     "title": "Contact Us",
     "subtitle": "Fill out the form and we'll get back to you soon.",
