@@ -196,6 +196,27 @@ curl -X POST http://localhost:3000/api/contact \
   }'
 ```
 
+## ☁️ Launch in the cloud
+
+Launch GitForms on Diploi in a few clicks:
+
+[![launch with diploi button](https://diploi.com/launch-big.svg)](https://diploi.com/launch/Luigigreco/gitforms)
+
+Once the project has been created, configure the deployment:
+
+1. Open the deployment in Diploi.
+2. Go to **Options > Next.js > Environment**.
+3. Add the required environment variables:
+   - `GITHUB_TOKEN`
+   - `GITHUB_REPO`
+   - `NEXT_PUBLIC_DEFAULT_LOCALE` (optional, `it` or `en`)
+4. Save your changes and redeploy if needed.
+
+After the deployment finishes, use the preview URL on the Diploi deployment page to test the live form.
+
+For more information, visit [Diploi](https://diploi.com/)
+
+
 ## 🚀 Deploy Options
 
 ### 1. Vercel (Recommended) ⚡
